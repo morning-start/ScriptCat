@@ -8,7 +8,7 @@
 // @match        https://github.com/*/settings
 // @icon         https://ts3.tc.mm.bing.net/th/id/ODF.KCStyvubJszELPE98QcMBA?w=32&h=32&qlt=90&pcl=fffffc&o=6&cb=thwsc4&pid=1.2
 // @namespace    morningstart.del-confirm
-// @updateURL    
+// @updateURL    https://github.com/morning-start/ScriptCat/blob/main/del_confirm.user.js
 // ==/UserScript==
 
 (function () {
