@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         CARSI 学术认证
-// @version      0.1.0
+// @version      0.1.1
 // @license      MIT
 // @description  自动登录 CARSI，去除繁琐确认
 // @author       Morning Start
@@ -9,7 +9,7 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_registerMenuCommand
-// @grant        GM_log
+
 // @require      https://cdn.jsdelivr.net/npm/sweetalert2@11
 // @icon         https://ts1.tc.mm.bing.net/th/id/ODF.OZvxenMn9xHD_Lempvp2YQ?w=32&h=32&qlt=97&pcl=fffffa&o=6&cb=thwsc4&pid=1.2
 // @namespace    morningstart.carsi
