@@ -203,7 +203,7 @@ class Menu {
             clearCache: false,
             // share 有三个选项 not only all
             share: "all",
-            person: true,
+            person: false,
         });
 
         /* 工具函数：把布尔值转成 checked 字符串 */
