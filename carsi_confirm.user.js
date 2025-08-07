@@ -286,7 +286,10 @@ function sleep(time) {
     if (Object.keys(info).length > 0) {
         // 创建Core实例并执行
         const core = new Core(info);
-        core.execute();
+        // 等待页面加载完成
+        window.addEventListener("load", () => {
+            core.execute();
+        });
     }
 
     const box = new Menu();
