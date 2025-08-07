@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         CARSI 学术认证
-// @version      0.1.1
+// @version      1.0.0
 // @license      MIT
 // @description  自动登录 CARSI，去除繁琐确认
 // @author       Morning Start
