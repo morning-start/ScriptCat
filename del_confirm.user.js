@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         Git Del Confirm
-// @version      2.1.0
+// @version      2.1.1
 // @license      MIT
 // @description  删除仓库自动填写库名，支持 github、gitee
 // @author       Morning Start
 // @match        https://gitee.com/*
-// @match        https://github.com/*/settings
+// @match        https://github.com/*
 // @icon         https://ts3.tc.mm.bing.net/th/id/ODF.KCStyvubJszELPE98QcMBA?w=32&h=32&qlt=90&pcl=fffffc&o=6&cb=thwsc4&pid=1.2
 // @namespace    morningstart.del-confirm
 // ==/UserScript==
