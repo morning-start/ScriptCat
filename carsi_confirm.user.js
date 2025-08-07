@@ -9,7 +9,6 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_registerMenuCommand
-
 // @require      https://cdn.jsdelivr.net/npm/sweetalert2@11
 // @icon         https://ts1.tc.mm.bing.net/th/id/ODF.OZvxenMn9xHD_Lempvp2YQ?w=32&h=32&qlt=97&pcl=fffffa&o=6&cb=thwsc4&pid=1.2
 // @namespace    morningstart.carsi
