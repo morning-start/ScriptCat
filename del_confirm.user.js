@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Git Del Confirm
-// @version      2.1.1
+// @version      2.2.0
 // @license      MIT
 // @description  删除仓库自动填写库名，支持 github、gitee
 // @author       Morning Start
@@ -13,46 +13,56 @@
 (function () {
     ("use strict");
     const currentURL = window.location.href;
-
-    if (currentURL.includes("gitee.com")) {
-        giteeConfirm();
-    } else if (currentURL.includes("github.com")) {
-        githubConfirm();
-    }
+    setInterval(() => {
+        if (currentURL.includes("gitee.com")) {
+            giteeConfirm();
+        } else if (currentURL.includes("github.com")) {
+            githubConfirm();
+        }
+    }, 1000);
 })();
 
 function githubConfirm() {
-    let del_btn = document.querySelector("#dialog-show-repo-delete-menu-dialog");
+    let del_btn = document.querySelector(
+        "#dialog-show-repo-delete-menu-dialog"
+    );
 
     del_btn.addEventListener("click", function () {
         const intervalId = setInterval(() => {
             const ipt = document.querySelector("#verification_field");
-            const targetButton = document.getElementById('repo-delete-proceed-button');
+            const targetButton = document.getElementById(
+                "repo-delete-proceed-button"
+            );
             if (targetButton && !ipt) {
                 // 若元素存在，点击该按钮
                 targetButton.click();
-                const button3 = document.getElementById('repo-delete-proceed-button');
+                const button3 = document.getElementById(
+                    "repo-delete-proceed-button"
+                );
                 const intervalCheck = setInterval(() => {
-                    if (button3.querySelector('.Button-label').textContent === "Delete this repository") {
+                    if (
+                        button3.querySelector(".Button-label").textContent ===
+                        "Delete this repository"
+                    ) {
                         // 清除定时器，停止检查
                         clearInterval(intervalId);
                         clearInterval(intervalCheck);
                         // 若按钮已禁用，解除禁用
                         button3.disabled = false;
                         // 填写库名
-                        let warp = document.querySelector('#repo-delete-proceed-button-container')
-                        let text = warp.querySelector('.FormControl-label')
-                        let input = warp.querySelector('#verification_field')
+                        let warp = document.querySelector(
+                            "#repo-delete-proceed-button-container"
+                        );
+                        let text = warp.querySelector(".FormControl-label");
+                        let input = warp.querySelector("#verification_field");
                         const regex = /"([^"]*)"/;
                         const match = text.textContent.match(regex);
-                        input.value = match[1]
+                        input.value = match[1];
                     }
                 }, 200);
             }
         }, 500);
         // console.log("button1");
-
-
     });
 }
 
