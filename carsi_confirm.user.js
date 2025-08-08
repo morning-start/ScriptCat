@@ -210,74 +210,111 @@ class Menu {
             title: "编辑 emptyInfo",
             html: this.buildFormInfo(emptyInfo),
             focusConfirm: false,
-            confirmButtonText: "确认",
+            confirmButtonText: "提交",
             showCancelButton: true,
             preConfirm: () => {
-                /* 2. 把表单里的数据读出来 */
+                const popup = Swal.getPopup();
+
+                // 正确获取所有字段
                 return {
-                    firstLetter: document
-                        .getElementById("firstLetter")
+                    firstLetter: popup
+                        .querySelector("#carsi-firstLetter")
                         .value.trim(),
-                    school: document.getElementById("school").value.trim(),
-                    name: document.getElementById("name").value.trim(),
-                    pwd: document.getElementById("pwd").value,
-                    remUser: document.getElementById("remUser").checked,
-                    notCache: document.getElementById("notCache").checked,
-                    clearCache: document.getElementById("clearCache").checked,
-                    share: document.getElementById("share").value,
-                    person: document.getElementById("person").checked,
+                    school: popup.querySelector("#carsi-school").value.trim(),
+                    name: popup.querySelector("#carsi-name").value.trim(),
+                    pwd: popup.querySelector("#carsi-pwd").value, // 不 trim 密码
+                    remUser: popup.querySelector("#carsi-remUser").checked,
+                    notCache: popup.querySelector("#carsi-notCache").checked,
+                    clearCache: popup.querySelector("#carsi-clearCache").checked,
+                    share: popup.querySelector("#carsi-share").value,
+                    person: popup.querySelector("#carsi-person").checked,
                 };
             },
         });
+        console.log(formValues);
+
         if (formValues) {
-            GM_setValue("info", formValues);
+            await GM_setValue("info", formValues);
         }
     }
     buildFormInfo(emptyInfo) {
-        const ck = (v) => (v ? "checked" : "");
+        return `
+<form id="infoForm" class="form-card">
 
-        return `<table style="width:100%;font-size:14px">
-        <tr><td>学校拼音首字母</td><td><input class="swal2-input" style="width:90%" id="firstLetter" maxlength="1" value="${
+    <div class="form-item">
+        <label>学校首字母 (firstLetter)</label>
+        <input type="text" id="carsi-firstLetter" name="firstLetter" maxlength="1" placeholder="如 A" value="${
             emptyInfo.firstLetter
-        }"></td></tr>
-        <tr><td>学校全称</td><td><input class="swal2-input" style="width:90%" id="school" value="${
+        }">
+    </div>
+
+    <div class="form-item">
+        <label>学校 (school)</label>
+        <input type="text" id="carsi-school" name="school" placeholder="请输入学校" value="${
             emptyInfo.school
-        }"></td></tr>
-        <tr><td>账号</td><td><input class="swal2-input" style="width:90%" id="name" value="${
+        }">
+    </div>
+
+    <div class="form-item">
+        <label>姓名 (name)</label>
+        <input type="text"  id="carsi-name"  name="name" placeholder="请输入姓名" value="${
             emptyInfo.name
-        }"></td></tr>
-        <tr><td>密码</td><td><input class="swal2-input" style="width:90%" id="pwd" type="password" value="${
+        }">
+    </div>
+
+    <div class="form-item">
+        <label>密码 (pwd)</label>
+        <input type="password" id="carsi-pwd" name="pwd" placeholder="请输入密码" value="${
             emptyInfo.pwd
-        }"></td></tr>
-        <tr><td>学校信息</td><td ><label><input type="checkbox" id="remUser" ${ck(
-            emptyInfo.remUser
-        )}> 记住用户</label></td></tr>
-        <tr><td>个人信息</td><td ><label><input type="checkbox" id="notCache" ${ck(
-            emptyInfo.notCache
-        )}> 不缓存</label><label><input type="checkbox" id="clearCache" ${ck(
-            emptyInfo.clearCache
-        )}> 清除缓存</label></td></tr>
-        <tr><td>共享范围</td>
-            <td><select id="share" class="swal2-select">
-                  <option value="not" ${
-                      emptyInfo.share === "not" ? "selected" : ""
-                  }>不共享信息</option>
-                  <option value="only" ${
-                      emptyInfo.share === "only" ? "selected" : ""
-                  }>仅当前服务</option>
-                  <option value="all" ${
-                      emptyInfo.share === "all" ? "selected" : ""
-                  }>所有服务</option>
-                </select></td></tr>
-        <tr><td colspan="2"><label><input type="checkbox" id="person" ${ck(
-            emptyInfo.person
-        )}> 跳转个人页面</label></td></tr>
-      </table>`;
+        }">
+    </div>
+
+    <div class="form-item checkbox-group">
+        <input type="checkbox" id="carsi-remUser" name="remUser" ${
+            emptyInfo.remUser ? "checked" : ""
+        }>
+        <label for="remUser">记住用户 (remUser)</label>
+    </div>
+
+    <div class="form-item checkbox-group">
+        <input type="checkbox" id="carsi-notCache" name="notCache" ${
+            emptyInfo.notCache ? "checked" : ""
+        }>
+        <label for="notCache">不缓存 (notCache)</label>
+    </div>
+
+    <div class="form-item checkbox-group">
+        <input type="checkbox" id="carsi-clearCache" name="clearCache" ${
+            emptyInfo.clearCache ? "checked" : ""
+        }>
+        <label for="clearCache">清除缓存 (clearCache)</label>
+    </div>
+
+    <div class="form-item">
+        <label>共享范围 (share)</label>
+        <select name="share" id="carsi-share">
+            <option value="not" ${
+                emptyInfo.share === "not" ? "selected" : ""
+            }>不共享</option>
+            <option value="only" ${
+                emptyInfo.share === "only" ? "selected" : ""
+            }>仅当前服务</option>
+            <option value="all" ${
+                emptyInfo.share === "all" ? "selected" : ""
+            }>所有服务</option>
+        </select>
+    </div>
+
+    <div class="form-item checkbox-group">
+        <input type="checkbox" id="carsi-person" name="person" ${
+            emptyInfo.person ? "checked" : ""
+        }>
+        <label for="person">个人模式 (person)</label>
+    </div>
+</form>`;
     }
 }
-function sleep(time) {
-    return new Promise((resolve) => setTimeout(resolve, time));
-}
+
 (function () {
     ("use strict");
 
