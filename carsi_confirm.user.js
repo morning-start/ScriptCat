@@ -273,21 +273,21 @@ class Menu {
         <input type="checkbox" id="carsi-remUser" name="remUser" ${
             emptyInfo.remUser ? "checked" : ""
         }>
-        <label for="remUser">记住用户 (remUser)</label>
+        <label for="carsi-remUser">记住用户 (remUser)</label>
     </div>
 
     <div class="form-item checkbox-group">
         <input type="checkbox" id="carsi-notCache" name="notCache" ${
             emptyInfo.notCache ? "checked" : ""
         }>
-        <label for="notCache">不缓存 (notCache)</label>
+        <label for="carsi-notCache">不缓存 (notCache)</label>
     </div>
 
     <div class="form-item checkbox-group">
         <input type="checkbox" id="carsi-clearCache" name="clearCache" ${
             emptyInfo.clearCache ? "checked" : ""
         }>
-        <label for="clearCache">清除缓存 (clearCache)</label>
+        <label for="carsi-clearCache">清除缓存 (clearCache)</label>
     </div>
 
     <div class="form-item">
