@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         Git Del Confirm
-// @version      2.2.0
+// @version      2.3.0
 // @license      MIT
-// @description  删除仓库自动填写库名，支持 github、gitee
+// @description  删除仓库自动填写库名，支持 github、gitee、gitcode
 // @author       Morning Start
 // @match        https://gitee.com/*
 // @match        https://github.com/*
+// @match        https://gitcode.com/*
 // @icon         https://ts3.tc.mm.bing.net/th/id/ODF.KCStyvubJszELPE98QcMBA?w=32&h=32&qlt=90&pcl=fffffc&o=6&cb=thwsc4&pid=1.2
 // @namespace    morningstart.del-confirm
 // ==/UserScript==
@@ -18,9 +19,45 @@
             giteeConfirm();
         } else if (currentURL.includes("github.com")) {
             githubConfirm();
+        } else if (currentURL.includes("gitcode.com")) {
+            gitcodeConfirm();
         }
     }, 1000);
 })();
+
+function gitcodeConfirm() {
+    let del_btn = document.querySelector("#app .devui-button--outline--danger");
+
+    del_btn.addEventListener("click", function () {
+        const ipt = document.querySelector(
+            ".repo-settings-modal .devui-input__inner"
+        );
+        const project = document.querySelector(
+            ".repo-settings-modal .devui-modal__body .ellipsis"
+        );
+        if (!ipt || !project) return;
+
+        // 1. 选中输入框
+        ipt.select();
+
+        // 2. 修改 value
+        ipt.value = project.textContent;
+
+        // 3. 创建并触发 input 事件（关键！）
+        const inputEvent = new Event("input", {
+            bubbles: true,
+            cancelable: true,
+        });
+        ipt.dispatchEvent(inputEvent);
+
+        // 可选：也触发 change 事件
+        const changeEvent = new Event("change", {
+            bubbles: true,
+            cancelable: true,
+        });
+        ipt.dispatchEvent(changeEvent);
+    });
+}
 
 function githubConfirm() {
     let del_btn = document.querySelector(
