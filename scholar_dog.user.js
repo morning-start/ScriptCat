@@ -12,8 +12,35 @@
 // @grant        GM_xmlhttpRequest
 // @require      https://cdn.jsdelivr.net/npm/sweetalert2@11
 // @namespace    morningstart.scholar_dog
-// @run-at      document-start
 // ==/UserScript==
+
+/**
+ * Wait for an element before resolving a promise
+ * @param {String} querySelector - Selector of element to wait for
+ * @param {Integer} timeout - Milliseconds to wait before timing out, or 0 for no timeout
+ */
+function waitForElement(querySelector, timeout) {
+    return new Promise((resolve, reject) => {
+        var timer = false;
+        if (document.querySelectorAll(querySelector).length) return resolve();
+        const observer = new MutationObserver(() => {
+            if (document.querySelectorAll(querySelector).length) {
+                observer.disconnect();
+                if (timer !== false) clearTimeout(timer);
+                return resolve();
+            }
+        });
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+        });
+        if (timeout)
+            timer = setTimeout(() => {
+                observer.disconnect();
+                reject();
+            }, timeout);
+    });
+}
 
 function createSpanNode(tag, backgroundColor, textColor) {
     let span = document.createElement("span");
@@ -32,16 +59,75 @@ function createSpanNode(tag, backgroundColor, textColor) {
     return span;
 }
 function formatterTag(key, value) {
+    const data_map = {
+        swufe: "西南财经大学",
+        cufe: "中央财经大学",
+        uibe: "对外经济贸易大学",
+        sdufe: "山东财经大学",
+        xdu: "西安电子科技大学",
+        swjtu: "西南交通大学",
+        ruc: "中国人民大学",
+        xmu: "厦门大学",
+        sjtu: "上海交通大学",
+        fdu: "复旦大学",
+        hhu: "河海大学",
+        scu: "四川大学",
+        cqu: "重庆大学",
+        nju: "南京大学",
+        xju: "新疆大学",
+        cug: "中国地质大学",
+        cju: "长江大学",
+        zju: "浙江大学",
+        zhongguokejihexin: "中国科技核心期刊",
+        fms: "FMS",
+        utd24: "UTD24",
+        eii: "EI检索",
+        cssci: "南大核心",
+        pku: "北大核心",
+        cpu: "中国药科大学",
+        sciif: "SCI影响因子-JCR",
+        sci: "SCI分区-JCR",
+        ssci: "SSCI分区-JCR",
+        jci: "JCI指数-JCR",
+        sciif5: "SCI五年影响因子-JCR",
+        sciwarn: "中科院预警",
+        sciBase: "SCI基础版分区-中科院",
+        sciUp: "SCI升级版分区-中科院",
+        ajg: "ABS学术期刊指南",
+        ft50: "FT50",
+        cscd: "中国科学引文数据库",
+        ahci: "A&HCI",
+        sciUpSmall: "中科院升级版小类分区",
+        sciUpTop: "中科院升级版Top分区",
+        esi: "ESI学科分类",
+        ccf: "中国计算机学会",
+    };
     // switch (key) {}
     switch (key) {
+        case "pku":
+            return "北核";
         case "ccf":
             return "CCF " + value;
         case "cssci":
             return value;
-        // case "zhongguokejihexin":
-        //     return "中国科技核心";
-        // case "pku":
-        //     return "北大中文核心"
+        case "zhongguokejihexin":
+            return "中科核";
+        case "sci":
+            return "SCI " + value;
+        case "ssci":
+            return "SSCI " + value;
+        case "sciif":
+            return "SCI-IF " + value;
+        case "sciBase":
+            return "SCI-Base " + value;
+        case "sciUp":
+            return "SCI-Up " + value;
+        case "jci":
+            return "JCI " + value;
+        case "sciUpTop":
+            return "SCI-UpTop " + value;
+        case "eii":
+            return "EI检索";
         default:
             return;
     }
@@ -95,6 +181,7 @@ function addSpanNodes(flag, tags) {
 }
 
 const cnki = {
+    resultTitle: "#gridTable",
     getTrList() {
         return document.querySelectorAll("table.result-table-list tbody tr");
     },
@@ -104,19 +191,12 @@ const cnki = {
     insertFlag(tr) {
         const flag = document.createElement("span");
         flag.className = "ScholarDogFlag";
-        tr.querySelector("td.name").appendChild(flag);
+        // 后面添加兄弟结点
+        tr.querySelector("td.name a").after(flag);
     },
 };
 
-async function run() {
-    // 根据网址
-    let cite;
-    if (location.href.includes("cnki")) {
-        cite = cnki;
-    } else {
-        return;
-    }
-
+async function run(cite) {
     const api_key = GM_getValue("API_KEY", "");
     // 查找 table.result-table-list 然后对其中 每个tr的 td.source 的文本。为一个期刊名
     let tr_list = cite.getTrList();
@@ -151,15 +231,19 @@ async function run() {
         });
         GM_setValue("API_KEY", api_key);
     });
-
-    GM_registerMenuCommand("查询期刊等级（shift + F）", async () => {
-        await run();
-    });
-
-    // 添加快捷键自动查询
+    let cite;
+    if (location.href.includes("cnki")) {
+        cite = cnki;
+    } else {
+        return;
+    }
+    // waitForElement(cite.resultTitle).then(async () => {
+    //     await run(cite);
+    // });
+    // 快捷键
     document.addEventListener("keydown", async (event) => {
         if (event.key === "F") {
-            await run();
+            await run(cite);
         }
     });
 })();
